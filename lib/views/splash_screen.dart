@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../utils/constants.dart';
+import '../services/auth_service.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,6 +15,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
+  Timer? _splashTimer;
 
   @override
   void initState() {
@@ -39,24 +42,55 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     
     _animationController.forward();
     
-    Timer(Duration(seconds: AppConstants.splashDuration), () {
-      Navigator.pushReplacementNamed(context, '/login');
+    // Usando postFrameCallback para garantir que o Provider 
+    // não seja acessado durante a construção
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startSplashTimer();
     });
   }
-
+  
   @override
   void dispose() {
     _animationController.dispose();
+    _splashTimer?.cancel();
     super.dispose();
+  }
+  
+  void _startSplashTimer() {
+    _splashTimer = Timer(Duration(seconds: AppConstants.splashDuration), () {
+      _checkAuthAndNavigate();
+    });
+  }
+  
+  // Método para verificar usuário logado e navegar para a tela apropriada
+  Future<void> _checkAuthAndNavigate() async {
+    if (!mounted) return;
+    
+    // Obtém o AuthService do Provider após a renderização
+    final authService = Provider.of<AuthService>(context, listen: false);
+    
+    // Inicializa o serviço e verifica se há sessão salva
+    await authService.init();
+    
+    // Verifica se já existe um usuário logado
+    if (authService.isLoggedIn) {
+      // Se houver um usuário logado, navega para o dashboard
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/dashboard');
+      }
+    } else {
+      // Se não houver usuário logado, navega para login
+      if (mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppConstants.splashGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppConstants.splashGradient),
         child: Center(
           child: AnimatedBuilder(
             animation: _animationController,
@@ -93,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       ),
     );
   }
-  
+
   Widget _buildLogo() {
     return Container(
       width: 120,
@@ -111,11 +145,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         ],
       ),
       child: const Center(
-        child: Icon(
-          Icons.school,
-          color: AppConstants.primaryDark,
-          size: 80,
-        ),
+        child: Icon(Icons.school, color: AppConstants.primaryDark, size: 80),
       ),
     );
   }

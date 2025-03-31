@@ -18,6 +18,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _resetEmailController = TextEditingController();
   bool _obscurePassword = true;
   bool _isLoading = false;
   
@@ -58,7 +59,57 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     _animationController.dispose();
     _usernameController.dispose();
     _passwordController.dispose();
+    _resetEmailController.dispose();
     super.dispose();
+  }
+  
+  // Método para lidar com recuperação de senha
+  void _handleForgotPassword() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Recuperar Senha'),
+        content: TextField(
+          controller: _resetEmailController,
+          decoration: const InputDecoration(
+            labelText: 'Email',
+            hintText: 'Digite seu email cadastrado',
+          ),
+          keyboardType: TextInputType.emailAddress,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () async {
+              if (_resetEmailController.text.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Por favor, digite seu email')),
+                );
+                return;
+              }
+              
+              Navigator.pop(context);
+              setState(() => _isLoading = true);
+              
+              try {
+                await _authController.resetPassword(
+                  _resetEmailController.text,
+                  context,
+                );
+              } finally {
+                if (mounted) {
+                  setState(() => _isLoading = false);
+                }
+              }
+            },
+            child: const Text('Enviar'),
+          ),
+        ],
+      ),
+    );
   }
 
   // Método para processar o login
@@ -69,36 +120,33 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
       });
       
       try {
-        final success = await _authController.login(
+        final result = await _authController.login(
           _usernameController.text,
           _passwordController.text,
           context,
         );
         
-        if (success) {
+        if (result['success']) {
           // Login bem-sucedido, navegue para a próxima tela
           // Aqui você pode navegar para a Dashboard ou Home
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Login realizado com sucesso!')),
-          );
-          
-          // Navegação para próxima tela - você deve criar esta rota
-          // Navigator.pushReplacementNamed(context, '/dashboard');
-        } else {
-          // Login falhou
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Usuário ou senha incorretos')),
-          );
+          if (context.mounted) {
+            Navigator.pushReplacementNamed(context, '/dashboard');
+            
+            // Por enquanto, apenas mostra uma mensagem
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(
+            //     content: Text('Login realizado com sucesso! A tela de dashboard seria carregada aqui.'),
+            //     duration: Duration(seconds: 3),
+            //   ),
+            // );
+          }
         }
-      } catch (e) {
-        // Erro durante o login
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erro ao fazer login: ${e.toString()}')),
-        );
       } finally {
-        setState(() {
-          _isLoading = false;
-        });
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
       }
     }
   }
@@ -316,7 +364,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: () {},
+                    onPressed: _handleForgotPassword,
                     child: const Text(
                       AppConstants.forgotPassword,
                       style: TextStyle(

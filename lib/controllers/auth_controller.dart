@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
+import '../models/institution_model.dart';
+import '../services/auth_service.dart';
 
 class AuthController {
   // Singleton pattern
@@ -9,60 +11,130 @@ class AuthController {
   factory AuthController() => _instance;
   
   // Construtor privado
-  AuthController._internal();
+  AuthController._internal() {
+    // Inicializa o serviço de autenticação
+    _authService.init();
+  }
   
-  // Estado do usuário atual
-  User? _currentUser;
+  // Serviço de autenticação que contém a lógica real
+  final AuthService _authService = AuthService();
   
-  // Getter para o usuário atual
-  User? get currentUser => _currentUser;
-  
-  // Método para verificar se o usuário está logado
-  bool get isLoggedIn => _currentUser != null;
+  // Getters que delegam para o serviço
+  User? get currentUser => _authService.currentUser;
+  Institution? get currentInstitution => _authService.currentInstitution;
+  bool get isLoggedIn => _authService.isLoggedIn;
+  bool get isLoading => _authService.isLoading;
   
   // Método de login
-  Future<bool> login(String username, String password, BuildContext context) async {
-    // Simulação de chamada de API para autenticação
-    // Em um app real, esta seria uma requisição para seu backend
-    
+  Future<Map<String, dynamic>> login(String login, String password, BuildContext context) async {
     try {
-      // Simula um delay de rede
-      await Future.delayed(const Duration(seconds: 2));
+      final result = await _authService.login(login, password);
       
-      // Verifica as credenciais (em um app real, isto seria verificado pelo backend)
-      if (username == 'admin' && password == '123456') {
-        // Login válido - criar objeto de usuário
-        _currentUser = User(
-          username: username,
-          name: 'Administrador',
-          email: 'admin@portalescolar.com',
-          userType: 'admin',
-        );
-        
-        return true;
+      if (result['success']) {
+        // Informar o usuário sobre sucesso
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Login realizado com sucesso')),
+          );
+        }
       } else {
-        // Limpa o usuário atual se as credenciais forem inválidas
-        _currentUser = null;
-        return false;
+        // Informar o usuário sobre falha
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(result['message'])),
+          );
+        }
       }
+      
+      return result;
     } catch (e) {
-      // Qualquer erro durante o login
-      _currentUser = null;
-      return false;
+      // Lidar com erros inesperados
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro inesperado: ${e.toString()}')),
+        );
+      }
+      
+      return {
+        'success': false,
+        'message': 'Erro inesperado durante login'
+      };
     }
   }
   
   // Método de logout
-  Future<void> logout() async {
-    // Limpa dados do usuário e faz logout
-    _currentUser = null;
-    // Aqui você adicionaria código para limpar tokens, etc.
+  Future<void> logout(BuildContext context) async {
+    try {
+      await _authService.logout();
+      
+      // Informar o usuário
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Logout realizado com sucesso')),
+        );
+      }
+      
+      // Navegar de volta para a tela de login
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/login');
+      }
+    } catch (e) {
+      // Lidar com erros
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao fazer logout: ${e.toString()}')),
+        );
+      }
+    }
   }
   
   // Método para recuperar senha
-  Future<bool> resetPassword(String email) async {
-    // Simulação de envio de e-mail de recuperação
-    await Future.delayed(const Duration(seconds: 1));
-    return true; // Sempre retorna sucesso nesta simulação
+  Future<bool> resetPassword(String email, BuildContext context) async {
+    try {
+      final result = await _authService.resetPassword(email);
+      
+      // Informar o usuário
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+      }
+      
+      return result['success'];
+    } catch (e) {
+      // Lidar com erros
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao recuperar senha: ${e.toString()}')),
+        );
+      }
+      
+      return false;
+    }
+  }
+  
+  // Método para atualizar perfil
+  Future<bool> updateProfile(Map<String, dynamic> userData, BuildContext context) async {
+    try {
+      final result = await _authService.updateProfile(userData);
+      
+      // Informar o usuário
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'])),
+        );
+      }
+      
+      return result['success'];
+    } catch (e) {
+      // Lidar com erros
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro ao atualizar perfil: ${e.toString()}')),
+        );
+      }
+      
+      return false;
+    }
   }
 }
