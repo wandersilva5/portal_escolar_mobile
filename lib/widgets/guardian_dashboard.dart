@@ -3,7 +3,7 @@ import '../models/user_model.dart';
 import '../models/institution_model.dart';
 import '../components/dashboard_components.dart';
 
-class GuardianDashboard extends StatelessWidget {
+class GuardianDashboard extends StatefulWidget {
   final User user;
   final Institution institution;
 
@@ -12,6 +12,14 @@ class GuardianDashboard extends StatelessWidget {
     required this.user,
     required this.institution,
   });
+
+  @override
+  State<GuardianDashboard> createState() => _GuardianDashboardState();
+}
+
+class _GuardianDashboardState extends State<GuardianDashboard> {
+  bool _obscurePassword = true;
+   final String _paymentCode = "3.600,00";
 
   @override
   Widget build(BuildContext context) {
@@ -23,10 +31,11 @@ class GuardianDashboard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             WelcomeBanner(
-              userName: user.name,
-              message: 'Bem-vindo ao Portal do Responsável. Acompanhe aqui a vida escolar do seu dependente.',
+              userName: widget.user.name,
+              message:
+                  'Bem-vindo ao Portal do Responsável. Acompanhe aqui a vida escolar do seu dependente.',
               icon: Icons.family_restroom,
-              institution: institution,
+              institution: widget.institution,
             ),
             const SizedBox(height: 24),
             _buildTuitionSection(context),
@@ -41,123 +50,131 @@ class GuardianDashboard extends StatelessWidget {
   }
 
   Widget _buildTuitionSection(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Sua mensalidade está disponível',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF444444),
+    return StatefulBuilder(
+      builder: (context, setState) {
+        bool isVisible = false;
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
-            ),
-            const SizedBox(height: 12),
-            // Campo de senha ou código de barras
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: institution.primaryColor.withOpacity(0.5),
-                    width: 1,
+            ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Sua mensalidade está disponível',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF444444),
                   ),
                 ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '••••••••••',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: institution.primaryColor,
-                      letterSpacing: 2,
+                const SizedBox(height: 12),
+                // Campo de senha ou código de barras
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(
+                        color: widget.institution.primaryColor.withOpacity(0.5),
+                        width: 1,
+                      ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.visibility_off,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
-                    onPressed: () {
-                      // Toggle visibility action
-                    },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        _obscurePassword ? '••••••••••' : 'R\$ $_paymentCode',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: widget.institution.primaryColor,
+                          letterSpacing: _obscurePassword ? 2 : 0,
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(
+                          _obscurePassword
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.grey,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            // Data de vencimento
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                ),
+                const SizedBox(height: 20),
+                // Data de vencimento
+                Row(
                   children: [
-                    const Text(
-                      'Vencimento',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      '20/06/2023',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey[800],
-                      ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Vencimento',
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '20/06/2023',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey[800],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
+                const SizedBox(height: 20),
+                // Botão de formas de pagamento
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Ação para exibir formas de pagamento
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: widget.institution.secondaryColor
+                          .withOpacity(0.7),
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Formas de pagamento',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-            const SizedBox(height: 20),
-            // Botão de formas de pagamento
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Ação para exibir formas de pagamento
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: institution.secondaryColor.withOpacity(0.7),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: const Text(
-                  'Formas de pagamento',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -204,7 +221,10 @@ class GuardianDashboard extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.amber.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
@@ -224,9 +244,9 @@ class GuardianDashboard extends StatelessWidget {
                   flex: 1,
                   child: IconButton(
                     icon: Icon(
-                      Icons.arrow_forward_ios, 
-                      size: 16, 
-                      color: institution.primaryColor.withOpacity(0.6)
+                      Icons.arrow_forward_ios,
+                      size: 16,
+                      color: widget.institution.primaryColor.withOpacity(0.6),
                     ),
                     onPressed: () {
                       // Ação para visualizar detalhes
@@ -261,10 +281,7 @@ class GuardianDashboard extends StatelessWidget {
       flex: flex,
       child: Text(
         text,
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[800],
-        ),
+        style: TextStyle(fontSize: 14, color: Colors.grey[800]),
         textAlign: TextAlign.left,
       ),
     );
@@ -274,7 +291,7 @@ class GuardianDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: institution.primaryColor.withOpacity(0.2),
+        color: widget.institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -294,11 +311,7 @@ class GuardianDashboard extends StatelessWidget {
             value: '04',
           ),
           const SizedBox(height: 12),
-          _buildInfoRow(
-            icon: Icons.class_,
-            title: 'Turma',
-            value: '04',
-          ),
+          _buildInfoRow(icon: Icons.class_, title: 'Turma', value: '04'),
           const SizedBox(height: 12),
           _buildInfoRow(
             icon: Icons.calendar_today,
@@ -316,7 +329,9 @@ class GuardianDashboard extends StatelessWidget {
               icon: const Icon(Icons.assignment),
               label: const Text('Ver Boletim Escolar'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: institution.secondaryColor.withOpacity(0.7),
+                backgroundColor: widget.institution.secondaryColor.withOpacity(
+                  0.7,
+                ),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -337,11 +352,7 @@ class GuardianDashboard extends StatelessWidget {
   }) {
     return Row(
       children: [
-        Icon(
-          icon,
-          color: institution.secondaryColor,
-          size: 20,
-        ),
+        Icon(icon, color: widget.institution.secondaryColor, size: 20),
         const SizedBox(width: 12),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
