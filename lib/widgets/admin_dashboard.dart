@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/institution_model.dart';
+import '../components/dashboard_components.dart';
 
 class AdminDashboard extends StatelessWidget {
   final User user;
@@ -21,7 +22,12 @@ class AdminDashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildWelcomeSection(),
+            WelcomeBanner(
+              userName: user.name,
+              message: 'Você tem 3 relatórios pendentes e 5 novos usuários aguardando aprovação.',
+              icon: Icons.admin_panel_settings,
+              institution: institution,
+            ),
             const SizedBox(height: 24),
             _buildStatisticsSection(),
             const SizedBox(height: 24),
@@ -34,74 +40,47 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeSection() {
-    // Obter a hora do dia para saudação personalizada
-    final hour = DateTime.now().hour;
-    String greeting;
-    
-    if (hour < 12) {
-      greeting = 'Bom dia';
-    } else if (hour < 18) {
-      greeting = 'Boa tarde';
-    } else {
-      greeting = 'Boa noite';
-    }
-    
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: institution.primaryColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.admin_panel_settings,
-            size: 45,
-            color: institution.primaryColor.withOpacity(0.9),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$greeting, ${user.name}!',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Você tem 3 relatórios pendentes e 5 novos usuários aguardando aprovação.',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildStatisticsSection() {
+    // Dados das estatísticas
+    final stats = [
+      {
+        'title': 'Usuários',
+        'value': '352',
+        'icon': Icons.people,
+        'color': institution.primaryColor,
+        'change': '+12% este mês',
+        'isPositive': true,
+      },
+      {
+        'title': 'Alunos',
+        'value': '287',
+        'icon': Icons.school,
+        'color': institution.primaryColor,
+        'change': '+5% este mês',
+        'isPositive': true,
+      },
+      {
+        'title': 'Professores',
+        'value': '42',
+        'icon': Icons.person,
+        'color': institution.primaryColor,
+        'change': '+2% este mês',
+        'isPositive': true,
+      },
+      {
+        'title': 'Cursos',
+        'value': '18',
+        'icon': Icons.book,
+        'color': institution.primaryColor,
+        'change': 'Sem alteração',
+        'isPositive': null,
+      },
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Visão Geral',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const SectionTitle(title: 'Visão Geral'),
         const SizedBox(height: 16),
         GridView.count(
           physics: const NeverScrollableScrollPhysics(),
@@ -109,183 +88,71 @@ class AdminDashboard extends StatelessWidget {
           crossAxisCount: 2,
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          children: [
-            _buildStatCard(
-              title: 'Usuários',
-              value: '352',
-              icon: Icons.people,
-              color: institution.primaryColor,
-              change: '+12% este mês',
-            ),
-            _buildStatCard(
-              title: 'Alunos',
-              value: '287',
-              icon: Icons.school,
-              color: institution.secondaryColor,
-              change: '+5% este mês',
-            ),
-            _buildStatCard(
-              title: 'Professores',
-              value: '42',
-              icon: Icons.person,
-              color: institution.primaryColor,
-              change: '+2% este mês',
-            ),
-            _buildStatCard(
-              title: 'Cursos',
-              value: '18',
-              icon: Icons.book,
-              color: institution.secondaryColor,
-              change: 'Sem alteração',
-            ),
-          ],
+          children: stats.map((stat) => StatCard(
+            title: stat['title'] as String,
+            value: stat['value'] as String,
+            icon: stat['icon'] as IconData,
+            color: stat['color'] as Color,
+            change: stat['change'] as String,
+            isPositive: stat['isPositive'] as bool? ?? true,
+          )).toList(),
         ),
       ],
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color color,
-    required String change,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
-                  fontSize: 14,
-                ),
-              ),
-              Icon(
-                icon,
-                color: color,
-                size: 24,
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            change,
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
-              fontSize: 12,
-            ),
-          ),
-        ],
-      ),
     );
   }
 
   Widget _buildQuickActionsSection() {
+    // Dados das ações rápidas
+    final actions = [
+      {
+        'title': 'Adicionar Usuário',
+        'icon': Icons.person_add,
+        'color': institution.primaryColor,
+      },
+      {
+        'title': 'Novo Curso',
+        'icon': Icons.add_box,
+        'color': institution.primaryColor,
+      },
+      {
+        'title': 'Relatórios',
+        'icon': Icons.bar_chart,
+        'color': institution.primaryColor,
+      },
+    ];
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Ações Rápidas',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        const SectionTitle(title: 'Ações Rápidas'),
         const SizedBox(height: 16),
         Row(
-          children: [
-            Expanded(
-              child: _buildActionButton(
-                title: 'Adicionar Usuário',
-                icon: Icons.person_add,
-                onTap: () {},
-                color: institution.primaryColor,
+          children: actions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final action = entry.value;
+            return Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(
+                  left: index == 0 ? 0 : 6, 
+                  right: index == actions.length - 1 ? 0 : 6
+                ),
+                child: QuickActionButton(
+                  title: action['title'] as String,
+                  icon: action['icon'] as IconData,
+                  color: action['color'] as Color,
+                  onTap: () {},
+                ),
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                title: 'Novo Curso',
-                icon: Icons.add_box,
-                onTap: () {},
-                color: institution.secondaryColor,
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: _buildActionButton(
-                title: 'Relatórios',
-                icon: Icons.bar_chart,
-                onTap: () {},
-                color: institution.primaryColor,
-              ),
-            ),
-          ],
+            );
+          }).toList(),
         ),
       ],
     );
   }
 
-  Widget _buildActionButton({
-    required String title,
-    required IconData icon,
-    required VoidCallback onTap,
-    required Color color,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: color,
-              size: 28,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildRecentActivitiesSection() {
-    final List<Map<String, String>> activities = [
+    // Dados das atividades recentes
+    final activities = [
       {
         'user': 'Maria Silva',
         'action': 'se cadastrou no sistema',
@@ -312,90 +179,73 @@ class AdminDashboard extends StatelessWidget {
       },
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Atividades Recentes',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+    return ListContainer(
+      title: 'Atividades Recentes',
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: activities.length,
+        separatorBuilder: (context, index) => Divider(
+          color: Colors.white.withOpacity(0.1),
+          height: 1,
         ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: institution.primaryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: activities.length,
-            separatorBuilder: (context, index) => Divider(
-              color: Colors.white.withOpacity(0.1),
-              height: 1,
+        itemBuilder: (context, index) {
+          final activity = activities[index];
+          IconData activityIcon;
+          
+          switch(activity['type']) {
+            case 'new_user':
+              activityIcon = Icons.person_add;
+              break;
+            case 'new_course':
+              activityIcon = Icons.book;
+              break;
+            case 'profile_update':
+              activityIcon = Icons.edit;
+              break;
+            case 'report':
+              activityIcon = Icons.assessment;
+              break;
+            default:
+              activityIcon = Icons.notifications;
+          }
+          
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundColor: index % 2 == 0 
+                ? institution.primaryColor.withOpacity(0.3) 
+                : institution.secondaryColor.withOpacity(0.3),
+              child: Icon(
+                activityIcon,
+                color: index % 2 == 0 
+                  ? institution.primaryColor 
+                  : institution.secondaryColor,
+                size: 20,
+              ),
             ),
-            itemBuilder: (context, index) {
-              final activity = activities[index];
-              IconData activityIcon;
-              
-              switch(activity['type']) {
-                case 'new_user':
-                  activityIcon = Icons.person_add;
-                  break;
-                case 'new_course':
-                  activityIcon = Icons.book;
-                  break;
-                case 'profile_update':
-                  activityIcon = Icons.edit;
-                  break;
-                case 'report':
-                  activityIcon = Icons.assessment;
-                  break;
-                default:
-                  activityIcon = Icons.notifications;
-              }
-              
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: index % 2 == 0 
-                    ? institution.primaryColor.withOpacity(0.3) 
-                    : institution.secondaryColor.withOpacity(0.3),
-                  child: Icon(
-                    activityIcon,
-                    color: index % 2 == 0 
-                      ? institution.primaryColor 
-                      : institution.secondaryColor,
-                    size: 20,
-                  ),
-                ),
-                title: Text(
-                  '${activity['user']}',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                subtitle: Text(
-                  '${activity['action']}',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
-                  ),
-                ),
-                trailing: Text(
-                  '${activity['time']}',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
-                    fontSize: 12,
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
+            title: Text(
+              activity['user'] as String,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            subtitle: Text(
+              activity['action'] as String,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.7),
+              ),
+            ),
+            trailing: Text(
+              activity['time'] as String,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.5),
+                fontSize: 12,
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

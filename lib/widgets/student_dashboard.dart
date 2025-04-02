@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/user_model.dart';
 import '../models/institution_model.dart';
+import '../components/dashboard_components.dart';
 
 class StudentDashboard extends StatelessWidget {
   final User user;
@@ -21,7 +22,12 @@ class StudentDashboard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildWelcomeSection(),
+            WelcomeBanner(
+              userName: user.name,
+              message: 'Você tem 4 aulas hoje e 3 tarefas para entregar esta semana.',
+              icon: Icons.backpack,
+              institution: institution,
+            ),
             const SizedBox(height: 24),
             _buildTodaySchedule(),
             const SizedBox(height: 24),
@@ -34,65 +40,9 @@ class StudentDashboard extends StatelessWidget {
     );
   }
 
-  Widget _buildWelcomeSection() {
-    // Obter a hora do dia para saudação personalizada
-    final hour = DateTime.now().hour;
-    String greeting;
-
-    if (hour < 12) {
-      greeting = 'Bom dia';
-    } else if (hour < 18) {
-      greeting = 'Boa tarde';
-    } else {
-      greeting = 'Boa noite';
-    }
-
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: institution.primaryColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            Icons.backpack, 
-            size: 45, 
-            color: institution.primaryColor.withOpacity(0.9)
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '$greeting, ${user.name}!',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Você tem 4 aulas hoje e 3 tarefas para entregar esta semana.',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTodaySchedule() {
     // Lista de aulas fictícias para o dia
-    final List<Map<String, String>> classes = [
+    final classes = [
       {
         'time': '07:30 - 08:20',
         'subject': 'Matemática',
@@ -119,90 +69,25 @@ class StudentDashboard extends StatelessWidget {
       },
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Horário de Hoje',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: institution.primaryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children:
-                classes.map((classInfo) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            color: institution.secondaryColor.withOpacity(0.3),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            classInfo['time']!,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                classInfo['subject']!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                '${classInfo['teacher']} • ${classInfo['room']}',
-                                style: TextStyle(
-                                  color: Colors.white.withOpacity(0.7),
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-          ),
-        ),
-      ],
+    return ListContainer(
+      title: 'Horário de Hoje',
+      child: Column(
+        children: classes.map((classInfo) {
+          return ScheduleCard(
+            time: classInfo['time']!,
+            title: classInfo['subject']!,
+            subtitle: '${classInfo['teacher']} • ${classInfo['room']}',
+            primaryColor: institution.primaryColor,
+            secondaryColor: institution.secondaryColor,
+          );
+        }).toList(),
+      ),
     );
   }
 
   Widget _buildGradesSection() {
     // Dados fictícios de notas
-    final List<Map<String, dynamic>> subjects = [
+    final subjects = [
       {
         'name': 'Matemática',
         'grade': 8.5,
@@ -238,105 +123,77 @@ class StudentDashboard extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Minhas Notas',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Ver Todas',
-                style: TextStyle(
-                  color: institution.secondaryColor,
-                  fontSize: 14,
-                ),
-              ),
-            ),
-          ],
+        SectionTitle(
+          title: 'Minhas Notas',
+          showViewAll: true,
+          viewAllColor: institution.secondaryColor,
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 140,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: subjects.length,
-            itemBuilder: (context, index) {
-              final subject = subjects[index];
-              final percentage =
-                  (subject['grade'] as double) /
-                  (subject['maxGrade'] as double);
-
-              return Container(
-                width: 160,
-                margin: const EdgeInsets.only(right: 16),
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: institution.secondaryColor.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      subject['name']!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+        HorizontalItemList<Map<String, dynamic>>(
+          items: subjects,
+          itemWidth: 160,
+          itemBuilder: (context, subject, index) {
+            final percentage = (subject['grade'] as double) / (subject['maxGrade'] as double);
+            
+            return Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: institution.secondaryColor.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    subject['name']!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Text(
-                          '${subject['grade']}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
-                          ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Text(
+                        '${subject['grade']}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
                         ),
-                        Text(
-                          '/${subject['maxGrade']}',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 16,
-                          ),
+                      ),
+                      Text(
+                        '/${subject['maxGrade']}',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 16,
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    LinearProgressIndicator(
-                      value: percentage,
-                      backgroundColor: Colors.white.withOpacity(0.2),
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _getGradeColor(percentage),
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  LabeledProgressBar(
+                    value: percentage,
+                    activeColor: _getGradeColor(percentage),
+                    backgroundColor: Colors.white.withOpacity(0.2),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    subject['teacher']!,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 12,
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      subject['teacher']!,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.7),
-                        fontSize: 12,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
@@ -354,7 +211,7 @@ class StudentDashboard extends StatelessWidget {
 
   Widget _buildPendingTasksSection() {
     // Lista fictícia de tarefas pendentes
-    final List<Map<String, dynamic>> tasks = [
+    final tasks = [
       {
         'title': 'Trabalho de Matemática',
         'subject': 'Matemática',
@@ -381,87 +238,24 @@ class StudentDashboard extends StatelessWidget {
       },
     ];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Tarefas Pendentes',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            color: institution.primaryColor.withOpacity(0.2),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: ListView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: tasks.length,
-            itemBuilder: (context, index) {
-              final task = tasks[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor:
-                      task['urgent'] == true
-                          ? Colors.red.withOpacity(0.2)
-                          : institution.secondaryColor.withOpacity(0.3),
-                  child: Icon(
-                    task['urgent'] == true
-                        ? Icons.assignment_late
-                        : Icons.assignment,
-                    color:
-                        task['urgent'] == true
-                            ? Colors.red.shade300
-                            : institution.secondaryColor,
-                    size: 20,
-                  ),
-                ),
-                title: Text(
-                  task['title']!,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                subtitle: Text(
-                  task['subject']!,
-                  style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                ),
-                trailing: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color:
-                        task['urgent'] == true
-                            ? Colors.red.withOpacity(0.2)
-                            : institution.secondaryColor.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    task['due']!,
-                    style: TextStyle(
-                      color:
-                          task['urgent'] == true
-                              ? Colors.red.shade300
-                              : Colors.white.withOpacity(0.7),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-                onTap: () {},
-              );
-            },
-          ),
-        ),
-      ],
+    return ListContainer(
+      title: 'Tarefas Pendentes',
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: tasks.length,
+        itemBuilder: (context, index) {
+          final task = tasks[index];
+          return PendingTaskItem(
+            title: task['title'] as String,
+            subtitle: task['subject'] as String,
+            dueDate: task['due'] as String,
+            isUrgent: task['urgent'] as bool,
+            secondaryColor: institution.secondaryColor,
+            onTap: () {},
+          );
+        },
+      ),
     );
   }
 }

@@ -53,7 +53,7 @@ class MockDataService {
       'name': 'Carlos Oliveira',
       'userType': 'director',
       'profileImage': 'https://i.pravatar.cc/150?img=12',
-      'institutionId': '2',
+      'institutionId': '1',
     },
     {
       'id': '5',
@@ -63,7 +63,7 @@ class MockDataService {
       'name': 'Tatiane Silva',
       'userType': 'guardian',
       'profileImage': 'https://i.pravatar.cc/150?img=5',
-      'institutionId': '2',
+      'institutionId': '1',
     },
   ];
 
@@ -106,8 +106,8 @@ class MockDataService {
     // Verifica se o login é email ou username
     final user = _users.firstWhere(
       (user) =>
-          (user['email'].toLowerCase() == login.toLowerCase() ||
-              user['username'].toLowerCase() == login.toLowerCase()) &&
+          (user['email'].toLowerCase() == login.toLowerCase()) //|| user['username'].toLowerCase() == login.toLowerCase())
+               &&
           user['password'] == password,
       orElse: () => {},
     );
@@ -344,125 +344,125 @@ class MockDataService {
     ],
   };
 
-  // Método para obter imagens do slider por instituição
-  Future<Map<String, dynamic>> getSlidersByInstitution(
-    String institutionId,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+  // // Método para obter imagens do slider por instituição
+  // Future<Map<String, dynamic>> getSlidersByInstitution(
+  //   String institutionId,
+  // ) async {
+  //   await Future.delayed(const Duration(milliseconds: 800));
 
-    final sliders = _slidersData[institutionId];
+  //   final sliders = _slidersData[institutionId];
 
-    if (sliders == null || sliders.isEmpty) {
-      return {
-        'success': false,
-        'message': 'Nenhuma imagem de slider encontrada para esta instituição',
-        'data': [],
-      };
-    }
+  //   if (sliders == null || sliders.isEmpty) {
+  //     return {
+  //       'success': false,
+  //       'message': 'Nenhuma imagem de slider encontrada para esta instituição',
+  //       'data': [],
+  //     };
+  //   }
 
-    return {
-      'success': true,
-      'message': 'Imagens de slider encontradas',
-      'data': sliders,
-    };
-  }
+  //   return {
+  //     'success': true,
+  //     'message': 'Imagens de slider encontradas',
+  //     'data': sliders,
+  //   };
+  // }
 
-  // Método para adicionar uma nova imagem ao slider
-  Future<Map<String, dynamic>> addSliderImage(
-    Map<String, dynamic> sliderData,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 800));
+  // // Método para adicionar uma nova imagem ao slider
+  // Future<Map<String, dynamic>> addSliderImage(
+  //   Map<String, dynamic> sliderData,
+  // ) async {
+  //   await Future.delayed(const Duration(milliseconds: 800));
 
-    final institutionId = sliderData['institutionId'];
-    final sliders = _slidersData[institutionId];
+  //   final institutionId = sliderData['institutionId'];
+  //   final sliders = _slidersData[institutionId];
 
-    if (sliders == null) {
-      _slidersData[institutionId] = [];
-    }
+  //   if (sliders == null) {
+  //     _slidersData[institutionId] = [];
+  //   }
 
-    final newSliderId = DateTime.now().millisecondsSinceEpoch.toString();
-    final newSlider = {...sliderData, 'id': newSliderId};
+  //   final newSliderId = DateTime.now().millisecondsSinceEpoch.toString();
+  //   final newSlider = {...sliderData, 'id': newSliderId};
 
-    _slidersData[institutionId]!.add(newSlider);
+  //   _slidersData[institutionId]!.add(newSlider);
 
-    return {
-      'success': true,
-      'message': 'Imagem de slider adicionada com sucesso',
-      'data': newSlider,
-    };
-  }
+  //   return {
+  //     'success': true,
+  //     'message': 'Imagem de slider adicionada com sucesso',
+  //     'data': newSlider,
+  //   };
+  // }
 
-  // Método para remover uma imagem do slider
-  Future<Map<String, dynamic>> removeSliderImage(
-    String sliderId,
-    String institutionId,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  // // Método para remover uma imagem do slider
+  // Future<Map<String, dynamic>> removeSliderImage(
+  //   String sliderId,
+  //   String institutionId,
+  // ) async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
 
-    final sliders = _slidersData[institutionId];
+  //   final sliders = _slidersData[institutionId];
 
-    if (sliders == null) {
-      return {
-        'success': false,
-        'message': 'Nenhuma imagem de slider encontrada para esta instituição',
-        'data': null,
-      };
-    }
+  //   if (sliders == null) {
+  //     return {
+  //       'success': false,
+  //       'message': 'Nenhuma imagem de slider encontrada para esta instituição',
+  //       'data': null,
+  //     };
+  //   }
 
-    final index = sliders.indexWhere((slider) => slider['id'] == sliderId);
+  //   final index = sliders.indexWhere((slider) => slider['id'] == sliderId);
 
-    if (index == -1) {
-      return {
-        'success': false,
-        'message': 'Imagem de slider não encontrada',
-        'data': null,
-      };
-    }
+  //   if (index == -1) {
+  //     return {
+  //       'success': false,
+  //       'message': 'Imagem de slider não encontrada',
+  //       'data': null,
+  //     };
+  //   }
 
-    final removedSlider = sliders.removeAt(index);
+  //   final removedSlider = sliders.removeAt(index);
 
-    return {
-      'success': true,
-      'message': 'Imagem de slider removida com sucesso',
-      'data': removedSlider,
-    };
-  }
+  //   return {
+  //     'success': true,
+  //     'message': 'Imagem de slider removida com sucesso',
+  //     'data': removedSlider,
+  //   };
+  // }
 
-  // Método para atualizar uma imagem do slider
-  Future<Map<String, dynamic>> updateSliderImage(
-    String sliderId,
-    Map<String, dynamic> updatedData,
-  ) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  // // Método para atualizar uma imagem do slider
+  // Future<Map<String, dynamic>> updateSliderImage(
+  //   String sliderId,
+  //   Map<String, dynamic> updatedData,
+  // ) async {
+  //   await Future.delayed(const Duration(milliseconds: 500));
 
-    final institutionId = updatedData['institutionId'];
-    final sliders = _slidersData[institutionId];
+  //   final institutionId = updatedData['institutionId'];
+  //   final sliders = _slidersData[institutionId];
 
-    if (sliders == null) {
-      return {
-        'success': false,
-        'message': 'Nenhuma imagem de slider encontrada para esta instituição',
-        'data': null,
-      };
-    }
+  //   if (sliders == null) {
+  //     return {
+  //       'success': false,
+  //       'message': 'Nenhuma imagem de slider encontrada para esta instituição',
+  //       'data': null,
+  //     };
+  //   }
 
-    final index = sliders.indexWhere((slider) => slider['id'] == sliderId);
+  //   final index = sliders.indexWhere((slider) => slider['id'] == sliderId);
 
-    if (index == -1) {
-      return {
-        'success': false,
-        'message': 'Imagem de slider não encontrada',
-        'data': null,
-      };
-    }
+  //   if (index == -1) {
+  //     return {
+  //       'success': false,
+  //       'message': 'Imagem de slider não encontrada',
+  //       'data': null,
+  //     };
+  //   }
 
-    // Atualizar os dados mantendo o ID original
-    sliders[index] = {...updatedData, 'id': sliderId};
+  //   // Atualizar os dados mantendo o ID original
+  //   sliders[index] = {...updatedData, 'id': sliderId};
 
-    return {
-      'success': true,
-      'message': 'Imagem de slider atualizada com sucesso',
-      'data': sliders[index],
-    };
-  }
+  //   return {
+  //     'success': true,
+  //     'message': 'Imagem de slider atualizada com sucesso',
+  //     'data': sliders[index],
+  //   };
+  // }
 }

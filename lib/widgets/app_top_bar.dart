@@ -26,7 +26,7 @@ class AppTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Determinar valores a exibir (usar dados do aluno ou do usuário)
-    final displayName = studentName ?? user.name;
+    final displayName = user.name ?? "Sem nome"; // Valor padrão
     final matricula = studentMatricula ?? "0"; // Valor padrão
     final turma = studentTurma ?? "00"; // Valor padrão 
     final periodo = periodoLetivo ?? "0000"; // Valor padrão
@@ -36,7 +36,7 @@ class AppTopBar extends StatelessWidget {
         // TopBar com foto do usuário, nome e menu
         Container(
           height: 72,
-          color: AppConstants.primaryDark, // Using primary color from constants
+          color: institution.primaryColor, // Using primary color from constants
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Row(
             children: [
@@ -78,7 +78,7 @@ class AppTopBar extends StatelessWidget {
                     const SizedBox(height: 2),
                     
                     // Show student information only for students, otherwise show user type
-                    if (user.isStudent || user.isGuardian) 
+                    if (user.isStudent) 
                       // Student info (matrícula and turma)
                       RichText(
                         text: TextSpan(
@@ -106,7 +106,7 @@ class AppTopBar extends StatelessWidget {
                     const SizedBox(height: 2),
                     
                     // Show period information only for students
-                    if (user.isStudent || user.isGuardian)
+                    if (user.isStudent)
                       Text(
                         'Período Letivo: $periodo',
                         style: const TextStyle(
