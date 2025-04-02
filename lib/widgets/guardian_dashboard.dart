@@ -50,7 +50,7 @@ class GuardianDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class GuardianDashboard extends StatelessWidget {
           Icon(
             Icons.family_restroom,
             size: 45,
-            color: Colors.white.withOpacity(0.9),
+            color: institution.primaryColor,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -111,7 +111,7 @@ class GuardianDashboard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Sua mensalidade está disponível',
                   style: TextStyle(
                     fontSize: 16,
@@ -126,7 +126,7 @@ class GuardianDashboard extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color: Colors.blue.withOpacity(0.5),
+                        color: institution.primaryColor.withOpacity(0.5),
                         width: 1,
                       ),
                     ),
@@ -134,17 +134,17 @@ class GuardianDashboard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         '••••••••••',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.blue,
+                          color: institution.primaryColor,
                           letterSpacing: 2,
                         ),
                       ),
                       IconButton(
-                        icon: const Icon(
+                        icon: Icon(
                           Icons.visibility_off,
                           color: Colors.grey,
                           size: 20,
@@ -192,7 +192,7 @@ class GuardianDashboard extends StatelessWidget {
                       // Ação para exibir formas de pagamento
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[400],
+                      backgroundColor: institution.secondaryColor.withOpacity(0.7),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -279,7 +279,11 @@ class GuardianDashboard extends StatelessWidget {
                 Expanded(
                   flex: 1,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                    icon: Icon(
+                      Icons.arrow_forward_ios, 
+                      size: 16, 
+                      color: institution.primaryColor.withOpacity(0.6)
+                    ),
                     onPressed: () {
                       // Ação para visualizar detalhes
                     },
@@ -327,7 +331,7 @@ class GuardianDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -376,7 +380,7 @@ class GuardianDashboard extends StatelessWidget {
               icon: const Icon(Icons.assignment),
               label: const Text('Ver Boletim Escolar'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: institution.secondaryColor.withOpacity(0.7),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 shape: RoundedRectangleBorder(
@@ -399,7 +403,7 @@ class GuardianDashboard extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: Colors.white.withOpacity(0.7),
+          color: institution.secondaryColor,
           size: 20,
         ),
         const SizedBox(width: 12),

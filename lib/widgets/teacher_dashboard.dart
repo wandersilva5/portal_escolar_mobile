@@ -50,7 +50,7 @@ class TeacherDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class TeacherDashboard extends StatelessWidget {
           Icon(
             Icons.school,
             size: 45,
-            color: Colors.white.withOpacity(0.9),
+            color: institution.primaryColor,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -90,7 +90,7 @@ class TeacherDashboard extends StatelessWidget {
     );
   }
 
-Widget _buildTodaySchedule() {
+  Widget _buildTodaySchedule() {
     // Lista de aulas fictícias para o dia
     final List<Map<String, String>> classes = [
       {
@@ -127,7 +127,7 @@ Widget _buildTodaySchedule() {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -140,7 +140,7 @@ Widget _buildTodaySchedule() {
                       width: 80,
                       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: institution.secondaryColor.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
@@ -178,9 +178,9 @@ Widget _buildTodaySchedule() {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_forward_ios,
-                        color: Colors.white,
+                        color: institution.secondaryColor,
                         size: 18,
                       ),
                       onPressed: () {
@@ -245,7 +245,7 @@ Widget _buildTodaySchedule() {
               child: Text(
                 'Ver Todas',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: institution.secondaryColor,
                   fontSize: 14,
                 ),
               ),
@@ -265,7 +265,7 @@ Widget _buildTodaySchedule() {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: institution.secondaryColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -300,7 +300,7 @@ Widget _buildTodaySchedule() {
                       value: classInfo['progress'] as double,
                       backgroundColor: Colors.white.withOpacity(0.2),
                       valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.white.withOpacity(0.8),
+                        institution.primaryColor,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -364,7 +364,7 @@ Widget _buildTodaySchedule() {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListView.builder(
@@ -377,10 +377,10 @@ Widget _buildTodaySchedule() {
                 leading: CircleAvatar(
                   backgroundColor: assignment['urgent'] == true
                       ? Colors.red.withOpacity(0.2)
-                      : Colors.white.withOpacity(0.2),
+                      : institution.secondaryColor.withOpacity(0.3),
                   child: Icon(
                     assignment['urgent'] == true ? Icons.priority_high : Icons.assignment,
-                    color: assignment['urgent'] == true ? Colors.red.shade300 : Colors.white,
+                    color: assignment['urgent'] == true ? Colors.red.shade300 : institution.secondaryColor,
                     size: 20,
                   ),
                 ),
@@ -402,7 +402,7 @@ Widget _buildTodaySchedule() {
                   decoration: BoxDecoration(
                     color: assignment['urgent'] == true
                         ? Colors.red.withOpacity(0.2)
-                        : Colors.white.withOpacity(0.1),
+                        : institution.secondaryColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

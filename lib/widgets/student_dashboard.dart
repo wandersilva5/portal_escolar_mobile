@@ -50,13 +50,17 @@ class StudentDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.backpack, size: 45, color: Colors.white.withOpacity(0.9)),
+          Icon(
+            Icons.backpack, 
+            size: 45, 
+            color: institution.primaryColor.withOpacity(0.9)
+          ),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -129,7 +133,7 @@ class StudentDashboard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: Column(
@@ -149,7 +153,7 @@ class StudentDashboard extends StatelessWidget {
                             horizontal: 12,
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
+                            color: institution.secondaryColor.withOpacity(0.3),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -250,7 +254,7 @@ class StudentDashboard extends StatelessWidget {
               child: Text(
                 'Ver Todas',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: institution.secondaryColor,
                   fontSize: 14,
                 ),
               ),
@@ -274,7 +278,7 @@ class StudentDashboard extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: institution.secondaryColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -391,7 +395,7 @@ class StudentDashboard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListView.builder(
@@ -405,7 +409,7 @@ class StudentDashboard extends StatelessWidget {
                   backgroundColor:
                       task['urgent'] == true
                           ? Colors.red.withOpacity(0.2)
-                          : Colors.white.withOpacity(0.2),
+                          : institution.secondaryColor.withOpacity(0.3),
                   child: Icon(
                     task['urgent'] == true
                         ? Icons.assignment_late
@@ -413,7 +417,7 @@ class StudentDashboard extends StatelessWidget {
                     color:
                         task['urgent'] == true
                             ? Colors.red.shade300
-                            : Colors.white,
+                            : institution.secondaryColor,
                     size: 20,
                   ),
                 ),
@@ -437,7 +441,7 @@ class StudentDashboard extends StatelessWidget {
                     color:
                         task['urgent'] == true
                             ? Colors.red.withOpacity(0.2)
-                            : Colors.white.withOpacity(0.1),
+                            : institution.secondaryColor.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(

@@ -50,7 +50,7 @@ class AdminDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class AdminDashboard extends StatelessWidget {
           Icon(
             Icons.admin_panel_settings,
             size: 45,
-            color: Colors.white.withOpacity(0.9),
+            color: institution.primaryColor.withOpacity(0.9),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -114,28 +114,28 @@ class AdminDashboard extends StatelessWidget {
               title: 'Usuários',
               value: '352',
               icon: Icons.people,
-              color: Colors.blue.shade300,
+              color: institution.primaryColor,
               change: '+12% este mês',
             ),
             _buildStatCard(
               title: 'Alunos',
               value: '287',
               icon: Icons.school,
-              color: Colors.green.shade300,
+              color: institution.secondaryColor,
               change: '+5% este mês',
             ),
             _buildStatCard(
               title: 'Professores',
               value: '42',
               icon: Icons.person,
-              color: Colors.amber.shade300,
+              color: institution.primaryColor,
               change: '+2% este mês',
             ),
             _buildStatCard(
               title: 'Cursos',
               value: '18',
               icon: Icons.book,
-              color: Colors.purple.shade300,
+              color: institution.secondaryColor,
               change: 'Sem alteração',
             ),
           ],
@@ -154,7 +154,7 @@ class AdminDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: color.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -219,6 +219,7 @@ class AdminDashboard extends StatelessWidget {
                 title: 'Adicionar Usuário',
                 icon: Icons.person_add,
                 onTap: () {},
+                color: institution.primaryColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -227,6 +228,7 @@ class AdminDashboard extends StatelessWidget {
                 title: 'Novo Curso',
                 icon: Icons.add_box,
                 onTap: () {},
+                color: institution.secondaryColor,
               ),
             ),
             const SizedBox(width: 12),
@@ -235,6 +237,7 @@ class AdminDashboard extends StatelessWidget {
                 title: 'Relatórios',
                 icon: Icons.bar_chart,
                 onTap: () {},
+                color: institution.primaryColor,
               ),
             ),
           ],
@@ -247,6 +250,7 @@ class AdminDashboard extends StatelessWidget {
     required String title,
     required IconData icon,
     required VoidCallback onTap,
+    required Color color,
   }) {
     return InkWell(
       onTap: onTap,
@@ -254,14 +258,14 @@ class AdminDashboard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: color.withOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
             Icon(
               icon,
-              color: Colors.white,
+              color: color,
               size: 28,
             ),
             const SizedBox(height: 8),
@@ -322,7 +326,7 @@ class AdminDashboard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListView.separated(
@@ -356,10 +360,14 @@ class AdminDashboard extends StatelessWidget {
               
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: Colors.white.withOpacity(0.2),
+                  backgroundColor: index % 2 == 0 
+                    ? institution.primaryColor.withOpacity(0.3) 
+                    : institution.secondaryColor.withOpacity(0.3),
                   child: Icon(
                     activityIcon,
-                    color: Colors.white,
+                    color: index % 2 == 0 
+                      ? institution.primaryColor 
+                      : institution.secondaryColor,
                     size: 20,
                   ),
                 ),

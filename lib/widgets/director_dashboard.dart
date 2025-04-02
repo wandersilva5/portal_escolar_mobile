@@ -50,7 +50,7 @@ class DirectorDashboard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: institution.primaryColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -59,7 +59,7 @@ class DirectorDashboard extends StatelessWidget {
           Icon(
             Icons.account_balance,
             size: 45,
-            color: Colors.white.withOpacity(0.9),
+            color: institution.primaryColor,
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -138,10 +138,17 @@ class DirectorDashboard extends StatelessWidget {
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
           children: performanceData.map((data) {
+            final bool isPositiveTrend = data['trend'] == 'up';
+            final Color trendColor = isPositiveTrend 
+                ? Colors.green.shade300 
+                : Colors.red.shade300;
+                
             return Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: (data.keys.toList().indexOf(data.keys.first) % 2 == 0)
+                    ? institution.primaryColor.withOpacity(0.2)
+                    : institution.secondaryColor.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Column(
@@ -166,15 +173,15 @@ class DirectorDashboard extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        data['trend'] == 'up' ? Icons.arrow_upward : Icons.arrow_downward,
-                        color: data['trend'] == 'up' ? Colors.green.shade300 : Colors.red.shade300,
+                        isPositiveTrend ? Icons.arrow_upward : Icons.arrow_downward,
+                        color: trendColor,
                         size: 16,
                       ),
                       const SizedBox(width: 4),
                       Text(
                         data['change']!,
                         style: TextStyle(
-                          color: data['trend'] == 'up' ? Colors.green.shade300 : Colors.red.shade300,
+                          color: trendColor,
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -238,7 +245,7 @@ class DirectorDashboard extends StatelessWidget {
               child: Text(
                 'Ver Todos',
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: institution.secondaryColor,
                   fontSize: 14,
                 ),
               ),
@@ -258,7 +265,9 @@ class DirectorDashboard extends StatelessWidget {
                 margin: const EdgeInsets.only(right: 16),
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: index % 2 == 0
+                      ? institution.primaryColor.withOpacity(0.2)
+                      : institution.secondaryColor.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -332,7 +341,7 @@ class DirectorDashboard extends StatelessWidget {
       children: [
         Icon(
           icon,
-          color: Colors.white.withOpacity(0.8),
+          color: institution.secondaryColor,
           size: 20,
         ),
         const SizedBox(height: 4),
@@ -412,7 +421,7 @@ class DirectorDashboard extends StatelessWidget {
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: institution.primaryColor.withOpacity(0.2),
             borderRadius: BorderRadius.circular(16),
           ),
           child: ListView.builder(
@@ -425,10 +434,10 @@ class DirectorDashboard extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundColor: approval['urgent'] == true
                       ? Colors.red.withOpacity(0.2)
-                      : Colors.white.withOpacity(0.2),
+                      : institution.secondaryColor.withOpacity(0.3),
                   child: Icon(
                     approval['urgent'] == true ? Icons.priority_high : Icons.approval,
-                    color: approval['urgent'] == true ? Colors.red.shade300 : Colors.white,
+                    color: approval['urgent'] == true ? Colors.red.shade300 : institution.secondaryColor,
                     size: 20,
                   ),
                 ),
@@ -449,7 +458,7 @@ class DirectorDashboard extends StatelessWidget {
                     ? Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.1),
+                          color: institution.secondaryColor.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
