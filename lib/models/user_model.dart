@@ -54,4 +54,7 @@ class User {
   
   // Verificar se é diretor
   bool get isDirector => userType == 'director';
+
+  // Verificar se é responsável/guardião
+  bool get isGuardian => userType == 'guardian';
 }

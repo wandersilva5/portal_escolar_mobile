@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
           // Remover referência à fonte Poppins
-          // fontFamily: 'Poppins',
+          fontFamily: 'Poppins',
         ),
         initialRoute: '/',
         routes: {

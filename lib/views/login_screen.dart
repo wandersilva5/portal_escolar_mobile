@@ -131,14 +131,6 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
           // Aqui você pode navegar para a Dashboard ou Home
           if (context.mounted) {
             Navigator.pushReplacementNamed(context, '/dashboard');
-            
-            // Por enquanto, apenas mostra uma mensagem
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   const SnackBar(
-            //     content: Text('Login realizado com sucesso! A tela de dashboard seria carregada aqui.'),
-            //     duration: Duration(seconds: 3),
-            //   ),
-            // );
           }
         }
       } finally {
